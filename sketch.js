@@ -4,6 +4,7 @@ let song, fft;
 let btnSize = 60;
 
 function preload() {
+  // 確保你的 GitHub 倉庫裡有 music.mp3
   song = loadSound('music.mp3');
 }
 
@@ -15,11 +16,16 @@ function setup() {
 }
 
 function draw() {
-  background(0); 
+  background(0); // 這裡的黑會與 HTML 背景融合
 
-  let bass = fft.analyze() ? fft.getEnergy("bass") : 0;
+  // 1. 獲取音頻能量 (用於按鈕跳動)
+  let bass = 0;
+  if (song && song.isPlaying()) {
+    fft.analyze();
+    bass = fft.getEnergy("bass");
+  }
 
-  // 緩慢移動 (降低 70%)
+  // 2. 水母移動邏輯 (速度降低 70%)
   let targetX = mouseX - width / 2;
   let targetY = mouseY - height / 2;
   pos.x = lerp(pos.x, targetX, 0.015);
@@ -29,12 +35,14 @@ function draw() {
   // --- 繪製巨大水母 ---
   push();
   translate(pos.x, pos.y, 0); 
+  // 面積佔螢幕約 1/3
   let targetRadius = sqrt((width * height) / (3 * PI)); 
   scale(targetRadius / 100); 
   
   strokeWeight(2.5);
   noFill();
   let normalHue = (t * 15) % 360; 
+  
   beginShape(POINTS);
   for (let i = 0; i < 12000; i++) {
     let k = 9 * cos(i / 61);
@@ -48,33 +56,33 @@ function draw() {
   endShape();
   pop();
 
-  // --- 繪製按鈕 (保證看見版) ---
-  drawSafeButton(bass);
+  // --- 繪製 UI 按鈕 (採用 2D 覆蓋寫法) ---
+  drawButton(bass);
 }
 
-function drawSafeButton(bass) {
+function drawButton(bass) {
   push();
-  // 重置所有變換，確保座標以畫布中心 (0,0) 為準
+  // 強制重置矩陣，回到螢幕中心座標
   resetMatrix();
   
-  // 計算左下角位置 (WEBGL 中心座標系)
+  // 定位在左下角
   let x = -width / 2 + 70;
   let y = height / 2 - 70;
   
-  // 音樂律動光暈
+  // 音樂光暈
   if (song && song.isPlaying()) {
     noStroke();
     fill(330, 80, 100, 0.2);
     ellipse(x, y, btnSize + bass/10);
   }
 
-  // 按鈕主體
+  // 按鈕圓框
   stroke(255, 0.8);
   strokeWeight(2);
-  fill(0, 0.8);
+  fill(0, 0.9); // 稍微深色一點確保看得到
   ellipse(x, y, btnSize);
 
-  // 圖標
+  // 播放/暫停圖標
   fill(255);
   noStroke();
   if (!song.isPlaying()) {
@@ -87,15 +95,17 @@ function drawSafeButton(bass) {
   pop();
 }
 
+// 點擊判定邏輯
 function mousePressed() {
-  // 將滑鼠座標轉換回 WEBGL 中心座標
+  // 將滑鼠座標轉換為 WEBGL 的中心點座標系
   let mX = mouseX - width / 2;
   let mY = mouseY - height / 2;
   
-  let btnX = -width / 2 + 70;
-  let btnY = height / 2 - 70;
+  // 對應 drawButton 裡的 x, y
+  let bX = -width / 2 + 70;
+  let bY = height / 2 - 70;
   
-  if (dist(mX, mY, btnX, btnY) < btnSize) {
+  if (dist(mX, mY, bX, bY) < btnSize/2 + 10) {
     if (song.isPlaying()) {
       song.pause();
     } else {
