@@ -1,18 +1,37 @@
+
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.13/lib/p5.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.13/lib/addons/p5.sound.min.js"></script>
-    
-    
-    
-    <link rel="stylesheet" type="text/css" href="style.css">
+<head>
     <meta charset="utf-8" />
-
-  </head>
-  <body>
-    <main>
-    </main>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jellyfish Abyss</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; background-color: black; }
+        canvas { display: block; }
+        
+        /* 詩句的樣式：優雅、白色、半透明 */
+        #poem-container {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: 'Courier New', Courier, monospace; /* 使用電腦內建字體，最保險 */
+            font-size: 18px;
+            line-height: 1.6;
+            pointer-events: none; /* 讓滑鼠可以穿透文字點擊到後面的按鈕 */
+            z-index: 10;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div id="poem-container">
+        THE NOISY REVELRY OF LIVING BEINGS,<br>
+        IN THE ABYSSAL OCEAN,<br>
+        IS PRECISELY WHERE THEY CANNOT BE HEARD…
+    </div>
     <script src="sketch.js"></script>
-  </body>
+</body>
 </html>
