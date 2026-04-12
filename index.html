@@ -3,52 +3,15 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jellyfish Abyss</title>
+    <title>Jellyfish Art</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
     <style>
         body { margin: 0; padding: 0; overflow: hidden; background-color: black; }
         canvas { display: block; }
-
-        /* 左上角：詩歌樣式 */
-        #poem-container {
-            position: absolute;
-            top: 40px;
-            left: 40px;
-            color: rgba(255, 255, 255, 0.6);
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 18px;
-            line-height: 1.8;
-            pointer-events: none; 
-            z-index: 10;
-        }
-
-        /* 右側居中：數字樣式 */
-        #number-container {
-            position: absolute;
-            right: 40px; /* 距離右邊邊界 40px */
-            top: 50%;   /* 垂直置中起始點 */
-            transform: translateY(-50%); /* 精確垂直置中校正 */
-            color: rgba(255, 255, 255, 0.4); /* 稍微淡一點，增加層次感 */
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 24px;
-            letter-spacing: 2px;
-            pointer-events: none;
-            z-index: 10;
-        }
     </style>
 </head>
 <body>
-    <div id="poem-container">
-        THE NOISY REVELRY OF LIVING BEINGS,<br>
-        IN THE ABYSSAL OCEAN,<br>
-        IS PRECISELY WHERE THEY CANNOT BE HEARD…
-    </div>
-
-    <div id="number-container">
-        3393230
-    </div>
-
     <script src="sketch.js"></script>
 </body>
 </html>
