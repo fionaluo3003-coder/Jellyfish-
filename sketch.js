@@ -5,7 +5,7 @@ let song, fft;
 
 // 按鈕設定
 let btnX = 60; 
-let btnY = 60; 
+let btnY = 160; 
 let baseSize = 50; 
 
 function preload() {
