@@ -14,11 +14,15 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-  strokeWeight(2.5); // 加粗粒子
+  
+  // 加粗線條，讓巨大的水母結構更清晰
+  strokeWeight(2.5); 
   noFill();
+  
   pos = createVector(0, 0);
   fft = new p5.FFT();
   colorMode(HSB, 360, 100, 100, 1);
+
   if (getAudioContext().state !== 'running') {
     getAudioContext().suspend();
   }
@@ -35,40 +39,48 @@ function draw() {
     isHeavyBeat = bass > 200; 
   }
 
-  // 速度降低 70% (0.015)
+  // --- 緩慢移動邏輯 (速度降低 70%) ---
   let targetX = mouseX - width / 2;
   let targetY = mouseY - height / 2;
   pos.x = lerp(pos.x, targetX, 0.015);
   pos.y = lerp(pos.y, targetY, 0.015);
   t += PI / 45;
 
+  // --- 繪製巨大水母 ---
   push();
   translate(pos.x, pos.y, 0); 
   
-  // 面積翻倍 (約佔屏幕 1/3)
+  // 【面積翻倍核心】調整計算公式，使面積佔比從 1/6 變成 1/3
   let targetRadius = sqrt((width * height) / (3 * PI)); 
   let scaleFactor = targetRadius / 100; 
   scale(scaleFactor); 
   
   let normalHue = (t * 15) % 360; 
   beginShape(POINTS);
+  // 增加一點點粒子數量 (15000)，讓巨大的身體不顯得稀疏
   for (let i = 0; i < 15000; i++) {
     let k = 9 * cos(i / 61);
     let e = i / 692 - 13; 
+    
     if (isHeavyBeat) {
       stroke((i / 50 + t * 100) % 360, 80, 100, 0.9);
     } else {
       stroke(normalHue, 70, 80, 0.7);
     }
+
     let d = (mag(k, e) ** 2) / 99 + 1;
     let bloom = isHeavyBeat ? map(bass, 200, 255, 0, 20) : 0;
+    
+    // 水母主體公式
     let q = 95 - (e / 1.5) * sin(k) + (k / d) * (8 + 5 * sin(sin(d * d + e / 9 - t))) + bloom;
     let c = d / 2 + cos(t - d * 2.5) / 13 - t / 16;
+    
     vertex(q * sin(c), q * cos(c), sin(d * 2 - t) * 40);
   }
   endShape();
   pop();
 
+  // --- 繪製 2D 交互按鈕 ---
   drawUI(bass);
 }
 
@@ -76,16 +88,19 @@ function drawUI(bass) {
   push();
   resetMatrix();
   translate(-width / 2, -height / 2);
+
   let pulse = map(bass, 0, 255, 0, 30); 
   noStroke();
   if (song && song.isPlaying()) {
     fill(330, 80, 100, 0.2); 
     ellipse(btnX, btnY, baseSize + pulse);
   }
+
   fill(0, 0.5);
   stroke(255, 0.8);
   strokeWeight(2);
   ellipse(btnX, btnY, baseSize);
+
   fill(255);
   noStroke();
   if (!song.isPlaying()) {
@@ -102,8 +117,12 @@ function touchStarted() {
   let d = dist(mouseX, mouseY, btnX, btnY);
   if (d < baseSize) {
     userStartAudio().then(() => {
-      if (song.isPlaying()) { song.pause(); } 
-      else { song.play(); fft.setInput(song); }
+      if (song.isPlaying()) {
+        song.pause();
+      } else {
+        song.play();
+        fft.setInput(song);
+      }
     });
   }
   return false;
