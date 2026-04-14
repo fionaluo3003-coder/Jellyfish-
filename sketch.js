@@ -1,3 +1,4 @@
+// noprotect
 let t = 0;
 let pos; 
 let angle = 0; 
@@ -9,13 +10,14 @@ let btnY = 60;
 let baseSize = 50; 
 
 function preload() {
+  // 確保你的 GitHub 倉庫中有 music.mp3
   song = loadSound('music.mp3');
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   
-  // 加粗線條，讓巨大的水母結構更清晰
+  // 設定線條粗細，讓結構更清晰
   strokeWeight(2.5); 
   noFill();
   
@@ -39,30 +41,32 @@ function draw() {
     isHeavyBeat = bass > 200; 
   }
 
-  // --- 緩慢移動邏輯 (速度降低 70%) ---
+  // --- 緩慢跟隨鼠標邏輯 ---
   let targetX = mouseX - width / 2;
   let targetY = mouseY - height / 2;
   pos.x = lerp(pos.x, targetX, 0.015);
   pos.y = lerp(pos.y, targetY, 0.015);
   t += PI / 45;
 
-  // --- 繪製巨大水母 ---
+  // --- 繪製水母 ---
   push();
   translate(pos.x, pos.y, 0); 
   
-  // 【面積翻倍核心】調整計算公式，使面積佔比從 1/6 變成 1/3
-  let targetRadius = sqrt((width * height) / (3 * PI)); 
+  // 【體積縮小 20%】調整分母為 3.75 (原為 3)
+  let targetRadius = sqrt((width * height) / (3.75 * PI)); 
   let scaleFactor = targetRadius / 100; 
   scale(scaleFactor); 
   
   let normalHue = (t * 15) % 360; 
   beginShape(POINTS);
-  // 增加一點點粒子數量 (15000)，讓巨大的身體不顯得稀疏
-  for (let i = 0; i < 15000; i++) {
+  
+  // 調整粒子數為 12000，兼顧質感與瀏覽器性能
+  for (let i = 0; i < 12000; i++) {
     let k = 9 * cos(i / 61);
     let e = i / 692 - 13; 
     
     if (isHeavyBeat) {
+      // 偵測到重低音時顏色閃爍
       stroke((i / 50 + t * 100) % 360, 80, 100, 0.9);
     } else {
       stroke(normalHue, 70, 80, 0.7);
@@ -71,7 +75,7 @@ function draw() {
     let d = (mag(k, e) ** 2) / 99 + 1;
     let bloom = isHeavyBeat ? map(bass, 200, 255, 0, 20) : 0;
     
-    // 水母主體公式
+    // 水母主體動態公式
     let q = 95 - (e / 1.5) * sin(k) + (k / d) * (8 + 5 * sin(sin(d * d + e / 9 - t))) + bloom;
     let c = d / 2 + cos(t - d * 2.5) / 13 - t / 16;
     
